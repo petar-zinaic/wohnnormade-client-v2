@@ -8,7 +8,7 @@ import { TenantService } from "@/services";
 import type { Tenant } from "@/types";
 import { translateViolationType } from "@/utils/violationTypeTranslation";
 
-export default function SearchTennant() {
+export default function SearchTenant() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);

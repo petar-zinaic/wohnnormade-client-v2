@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { SearchTennant } from "@/components/common";
+import { SearchTenant } from "@/components/common";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 export default function Search() {
@@ -14,7 +14,7 @@ export default function Search() {
           {t("search.title")}{" "}
           <span className="text-orange">{t("search.titleSpan")}</span>
         </h1>
-        <SearchTennant />
+        <SearchTenant />
       </div>
     </ProtectedRoute>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import TenantEditForm from "@/components/forms/TenantEditForm";
+import { TenantEditForm } from "@/components/forms";
 
 export default function TenantEditPage() {
   const params = useParams();

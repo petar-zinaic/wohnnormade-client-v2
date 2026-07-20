@@ -9,7 +9,7 @@ import { useTenant } from "@/context/TenantContext";
 import type { CreateTenantData } from "@/types";
 import { ViolationType } from "@/types";
 
-export default function ReportTennantForm() {
+export default function ReportTenantForm() {
   const { t } = useTranslation();
   const { createTenant, isLoading } = useTenant();
   const router = useRouter();

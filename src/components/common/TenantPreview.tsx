@@ -9,7 +9,7 @@ import { translateViolationType } from "@/utils/violationTypeTranslation";
 import { ContactReporterModal } from "@/components/forms";
 import { downloadTenantPdf } from "@/utils/tenantPdf";
 
-export default function TennantPreview() {
+export default function TenantPreview() {
   const { t } = useTranslation();
   const router = useRouter();
   const { user } = useAuth();

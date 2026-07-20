@@ -1,5 +1,5 @@
-import { TennantPreview } from "@/components/common";
+import { TenantPreview } from "@/components/common";
 
-export default function TenantPreview() {
-  return <TennantPreview />;
+export default function TenantPreviewPage() {
+  return <TenantPreview />;
 }
