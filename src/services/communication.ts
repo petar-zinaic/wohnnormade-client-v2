@@ -1,5 +1,6 @@
 import { getApiUrl } from "@/utils/api";
 import { AuthService } from "./auth";
+import type { ApiResponse } from "@/types/tenant";
 
 export interface CommunicationMessage {
   id: number;
@@ -49,15 +50,6 @@ export interface ContactReporterData {
 export interface ReplyData {
   threadId: string;
   message: string;
-}
-
-export interface ApiResponse<T> {
-  success: boolean;
-  result: T;
-  error?: {
-    message: string;
-    code?: string;
-  };
 }
 
 class CommunicationService {

@@ -160,7 +160,7 @@ export default function ReportTennantForm() {
                 <option value={ViolationType.RentNotPaid}>
                   {t("contribute.rentNotPaid")}
                 </option>
-                <option value={ViolationType.PropetryWrecked}>
+                <option value={ViolationType.PropertyWrecked}>
                   {t("contribute.propertyWrecked")}
                 </option>
               </select>

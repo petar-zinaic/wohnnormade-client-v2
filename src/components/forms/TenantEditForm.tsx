@@ -235,8 +235,8 @@ export default function TenantEditForm({ tenantId }: Props) {
                 <option value={ViolationType.RentNotPaid}>
                   {translateViolationType(ViolationType.RentNotPaid, t)}
                 </option>
-                <option value={ViolationType.PropetryWrecked}>
-                  {translateViolationType(ViolationType.PropetryWrecked, t)}
+                <option value={ViolationType.PropertyWrecked}>
+                  {translateViolationType(ViolationType.PropertyWrecked, t)}
                 </option>
               </select>
             </div>

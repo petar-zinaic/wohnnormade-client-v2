@@ -7,7 +7,7 @@ export interface TenantAuthor {
 
 export enum ViolationType {
   RentNotPaid = "Rent Not Paid",
-  PropetryWrecked = "Propetry Wrecked",
+  PropertyWrecked = "Property Wrecked",
 }
 
 export interface Tenant {
@@ -36,7 +36,10 @@ export interface CreateTenantData {
 }
 
 export interface ApiResponse<T> {
-  result: T;
-  status: boolean;
-  error: any;
+  success?: boolean;
+  result?: T;
+  error?: { message: string; code?: string } | any;
+  status?: boolean;
+  message?: string;
+  data?: T;
 }
