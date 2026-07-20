@@ -37,7 +37,7 @@ export interface CreateTenantData {
 
 export interface ApiResponse<T> {
   success?: boolean;
-  result?: T;
+  result: T;
   error?: { message: string; code?: string } | any;
   status?: boolean;
   message?: string;
