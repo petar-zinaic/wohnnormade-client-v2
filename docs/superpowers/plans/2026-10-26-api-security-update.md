@@ -59,7 +59,7 @@ Endpoint changes:
 
 ## Task 0: Production configuration check (no code)
 
-- [ ] In Railway (API service → Variables), confirm `CLIENT_URL=https://wohnnormade.com`. Reset and thread links in emails are built from it; the default is `http://localhost:3000`.
+- [ ] In Railway (API service → Variables), confirm `CLIENT_URL=https://www.wohnnomade.com`. Reset and thread links in emails are built from it; the default is `http://localhost:3000`.
 - [ ] Confirm `FROM_EMAIL` uses a domain verified in Resend. Otherwise no reset emails are sent (the API logs the failure but still returns 200).
 
 ---
@@ -205,4 +205,4 @@ Only `missing_token` ends the session. `invalid_credentials` (a wrong login or w
   6. **Ownership:** as user B, opening `/tenant/<A's id>` shows "not owner", with no form.
   7. **Delete account:** the confirmation text mentions reports and conversations. After deleting, you are logged out.
   8. **German:** switch to DE and repeat steps 2–4. No raw keys or English API messages should appear.
-- [ ] **Production smoke test after deploy:** log in, search, open a tenant, send a message, and request a reset email. Confirm the email link points to `https://wohnnormade.com/reset-password?...`.
+- [ ] **Production smoke test after deploy:** log in, search, open a tenant, send a message, and request a reset email. Confirm the email link points to `https://www.wohnnomade.com/reset-password?...`.

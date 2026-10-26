@@ -4,7 +4,7 @@
 
 Wohnnormade is a tenant reporting and review platform (German market focus). Users can report tenant violations, search tenant records, communicate with reporters, and manage their profiles. The app supports English and German.
 
-**Production URL:** https://wohnnormade.com
+**Production URL:** https://www.wohnnomade.com
 
 ## Tech Stack
 
