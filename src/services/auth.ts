@@ -1,40 +1,33 @@
-import type { User, AuthResponse, LoginData, RegisterData } from "@/types/auth";
-import { getApiUrl } from "@/utils/api";
+import type {
+  User,
+  AuthResponse,
+  AuthMessageResponse,
+  LoginData,
+  RegisterData,
+} from "@/types/auth";
+import { apiFetch } from "@/utils/api";
+
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
 class AuthService {
   private static readonly TOKEN_KEY = "auth_token";
   private static readonly USER_KEY = "auth_user";
 
   static async login(data: LoginData): Promise<AuthResponse> {
-    console.log("Attempting login with:", data);
-
-    const response = await fetch(getApiUrl("auth/login"), {
+    const result = await apiFetch<AuthResponse>("auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-
-    console.log("Login response status:", response.status);
-
-    if (!response.ok) {
-      const error = await response.json();
-      console.error("Login error:", error);
-      throw new Error(error.error?.message || "Login failed");
-    }
-
-    const result = await response.json();
-    console.log("Login result:", result);
 
     this.setAuthData(result);
     return result;
   }
 
   static async register(data: RegisterData): Promise<AuthResponse> {
-    console.log("Attempting registration with:", data);
-
-    const response = await fetch(getApiUrl("auth/register"), {
+    const result = await apiFetch<AuthResponse>("auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -42,19 +35,45 @@ class AuthService {
       body: JSON.stringify(data),
     });
 
-    console.log("Registration response status:", response.status);
-
-    if (!response.ok) {
-      const error = await response.json();
-      console.error("Registration error:", error);
-      throw new Error(error.error?.message || "Registration failed");
-    }
-
-    const result = await response.json();
-    console.log("Registration result:", result);
-
     this.setAuthData(result);
     return result;
+  }
+
+  static async forgotPassword(email: string): Promise<AuthMessageResponse> {
+    return apiFetch<AuthMessageResponse>("auth/forgot-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  static async resetPassword(
+    token: string,
+    newPassword: string
+  ): Promise<AuthMessageResponse> {
+    return apiFetch<AuthMessageResponse>("auth/reset-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token, newPassword }),
+    });
+  }
+
+  static async changePassword(
+    currentPassword: string,
+    newPassword: string
+  ): Promise<AuthMessageResponse> {
+    return apiFetch<AuthMessageResponse>("auth/change-password", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...this.getAuthHeaders(),
+      },
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
   }
 
   static logout(): void {
@@ -77,50 +96,38 @@ class AuthService {
     return this.getToken() !== null;
   }
 
-  private static setAuthData(authResponse: any): void {
-    console.log("Auth response received:", authResponse);
+  // Reads the `exp` claim of a JWT; null if the token can't be decoded
+  static getTokenExpiry(token: string): Date | null {
+    try {
+      const payload = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+      const { exp } = JSON.parse(atob(payload));
+      return typeof exp === "number" ? new Date(exp * 1000) : null;
+    } catch {
+      return null;
+    }
+  }
 
-    // Handle different possible response structures
-    const token =
-      authResponse.token ||
-      authResponse.accessToken ||
-      authResponse.access_token ||
-      authResponse.result?.token ||
-      authResponse.result?.accessToken ||
-      authResponse.data?.token;
-
-    const user =
-      authResponse.user ||
-      authResponse.userData ||
-      authResponse.data?.user ||
-      authResponse.result?.user ||
-      authResponse.result?.userData;
-
-    console.log("Extracted token:", token);
-    console.log("Extracted user:", user);
+  private static setAuthData(authResponse: AuthResponse): void {
+    const { token, user } = authResponse;
 
     if (!token) {
-      console.error("No token found in response:", authResponse);
       throw new Error("No token received from server");
     }
 
     if (!user) {
-      console.error("No user data found in response:", authResponse);
       throw new Error("No user data received from server");
     }
 
-    // Set cookie with 7 days expiration
-    this.setCookie(this.TOKEN_KEY, token, 7);
-    this.setCookie(this.USER_KEY, JSON.stringify(user), 7);
-
-    console.log("Token and user data stored in cookies");
+    // Expire the cookies together with the JWT (24 h), not later
+    const expires =
+      this.getTokenExpiry(token) ?? new Date(Date.now() + ONE_DAY_MS);
+    this.setCookie(this.TOKEN_KEY, token, expires);
+    this.setCookie(this.USER_KEY, JSON.stringify(user), expires);
   }
 
-  private static setCookie(name: string, value: string, days: number): void {
+  private static setCookie(name: string, value: string, expires: Date): void {
     if (typeof window === "undefined") return;
 
-    const expires = new Date();
-    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
     document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
   }
 

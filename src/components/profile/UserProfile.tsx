@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { Button, LocationAutocomplete } from "@/components/common";
-import { UserService, UpdateUserData } from "@/services";
+import { AuthService, UserService, UpdateUserData } from "@/services";
 import type { Tenant } from "@/types";
 import type { UserProfile as UserProfileType } from "@/services";
 import {
@@ -17,6 +17,7 @@ import {
   validateCountry,
 } from "@/utils/validation";
 import { formatDateDMY } from "@/utils/date";
+import { ApiError, getErrorMessage } from "@/utils/api";
 import { translateViolationType } from "@/utils/violationTypeTranslation";
 
 export default function UserProfile() {
@@ -96,9 +97,7 @@ export default function UserProfile() {
         const p = await UserService.getUserProfile(user.id!);
         setReportedTenants(p.tenants || []);
       } catch (err) {
-        setTenantsError(
-          err instanceof Error ? err.message : t("profile.loadTenantsFailed")
-        );
+        setTenantsError(getErrorMessage(err, t, "profile.loadTenantsFailed"));
       } finally {
         setIsTenantsLoading(false);
       }
@@ -133,6 +132,7 @@ export default function UserProfile() {
     setIsLoading(true);
 
     try {
+      // Only these fields are accepted by PUT /users/:id
       const updateData: UpdateUserData = {
         name,
         surname,
@@ -147,7 +147,8 @@ export default function UserProfile() {
       // Update the user context with new data
       // Note: You might need to add a method to update user context
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("profile.updateFailed"));
+      // Covers email_already_exists (409) and request_body_validation (400)
+      setError(getErrorMessage(err, t, "profile.updateFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -171,34 +172,21 @@ export default function UserProfile() {
     setIsPasswordLoading(true);
 
     try {
-      // This would need to be implemented in your API
-      const response = await fetch("/api/auth/change-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          currentPassword,
-          newPassword,
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || "Failed to change password");
-      }
-
-      const result = await response.json();
-      setPasswordMessage(result.message);
+      await AuthService.changePassword(currentPassword, newPassword);
+      setPasswordMessage(t("profile.passwordChanged"));
       setShowChangePassword(false);
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (err) {
-      setPasswordError(
-        err instanceof Error ? err.message : t("profile.changePasswordFailed")
-      );
+      // A wrong current password is a 401 invalid_credentials; it must not end the session
+      if (err instanceof ApiError && err.code === "invalid_credentials") {
+        setPasswordError(t("profile.currentPasswordIncorrect"));
+      } else {
+        setPasswordError(
+          getErrorMessage(err, t, "profile.changePasswordFailed")
+        );
+      }
     } finally {
       setIsPasswordLoading(false);
     }
@@ -221,9 +209,7 @@ export default function UserProfile() {
       logout();
       router.push("/");
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : t("profile.deleteAccountFailed")
-      );
+      setError(getErrorMessage(err, t, "profile.deleteAccountFailed"));
     }
   };
 
@@ -320,7 +306,7 @@ export default function UserProfile() {
                     {t("profile.name")}
                   </label>
                   <p className="text-gray-900 bg-emerald-50 border border-emerald-200 p-2 rounded">
-                    {profile?.name || user.name}
+                    {profile?.name || user.name || "-"}
                   </p>
                 </div>
                 <div>
@@ -328,7 +314,7 @@ export default function UserProfile() {
                     {t("profile.surname")}
                   </label>
                   <p className="text-gray-900 bg-violet-50 border border-violet-200 p-2 rounded">
-                    {profile?.surname || user.surname}
+                    {profile?.surname || user.surname || "-"}
                   </p>
                 </div>
                 <div>
@@ -336,7 +322,7 @@ export default function UserProfile() {
                     {t("profile.city")}
                   </label>
                   <p className="text-gray-900 bg-amber-50 border border-amber-200 p-2 rounded">
-                    {profile?.city || user.city}
+                    {profile?.city || user.city || "-"}
                   </p>
                 </div>
                 <div>
@@ -344,7 +330,7 @@ export default function UserProfile() {
                     {t("profile.country")}
                   </label>
                   <p className="text-gray-900 bg-rose-50 border border-rose-200 p-2 rounded">
-                    {profile?.country || user.country}
+                    {profile?.country || user.country || "-"}
                   </p>
                 </div>
               </div>

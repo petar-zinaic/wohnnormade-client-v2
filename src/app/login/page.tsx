@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function LoginPage() {
-  return <LoginForm />;
+interface Props {
+  searchParams: { sessionExpired?: string };
+}
+
+export default function LoginPage({ searchParams }: Props) {
+  return <LoginForm sessionExpired={searchParams.sessionExpired === "1"} />;
 }

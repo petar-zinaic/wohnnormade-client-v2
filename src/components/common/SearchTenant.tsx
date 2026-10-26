@@ -7,8 +7,9 @@ import DatePicker from "react-datepicker";
 import { TenantService } from "@/services";
 import type { Tenant } from "@/types";
 import { translateViolationType } from "@/utils/violationTypeTranslation";
+import { getErrorMessage } from "@/utils/api";
 
-export default function SearchTennant() {
+export default function SearchTenant() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
@@ -41,11 +42,10 @@ export default function SearchTennant() {
     setHasSearched(true);
     try {
       const formattedDate = formatDateToYYYYMMDD(dateOfBirth);
-      const res = await TenantService.searchTenants(searchTerm, formattedDate);
-      const list = (res as any).result || (res as any).data || res;
+      const list = await TenantService.searchTenants(searchTerm, formattedDate);
       setSuggestions(Array.isArray(list) ? list : []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("search.searchError"));
+      setError(getErrorMessage(err, t, "search.searchError"));
       setSuggestions([]);
     } finally {
       setIsLoading(false);

@@ -2,14 +2,17 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { Button, LocationAutocomplete } from "@/components/common";
 import DatePicker from "react-datepicker";
 import { useTenant } from "@/context/TenantContext";
+import { useAuth } from "@/context/AuthContext";
 import type { CreateTenantData, Tenant } from "@/types";
 import { ViolationType } from "@/types";
 import { formatDateDMY } from "@/utils/date";
 import { translateViolationType } from "@/utils/violationTypeTranslation";
+import { getErrorMessage } from "@/utils/api";
 
 interface Props {
   tenantId: number;
@@ -19,6 +22,7 @@ export default function TenantEditForm({ tenantId }: Props) {
   const router = useRouter();
   const { t } = useTranslation();
   const { getTenantById, updateTenant, deleteTenant, isLoading } = useTenant();
+  const { user } = useAuth();
 
   const [tenant, setTenant] = useState<Tenant | null>(null);
   const [name, setName] = useState("");
@@ -29,6 +33,7 @@ export default function TenantEditForm({ tenantId }: Props) {
   const [violationType, setViolationType] = useState<ViolationType | "">("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
+  const [loadError, setLoadError] = useState("");
   const [message, setMessage] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
   const [showSaveButton, setShowSaveButton] = useState(false);
@@ -36,21 +41,19 @@ export default function TenantEditForm({ tenantId }: Props) {
   useEffect(() => {
     const load = async () => {
       try {
-        const t = await getTenantById(tenantId);
-        setTenant(t);
-        setName(t.name || "");
-        setSurname(t.surname || "");
-        setCity(t.city || "");
-        setCountry(t.country || "");
-        setViolationType((t.violationType as ViolationType) || "");
-        setDescription(t.description || "");
-        setDateOfBirth(t.dateOfBirth ? new Date(t.dateOfBirth) : null);
+        const loaded = await getTenantById(tenantId);
+        setTenant(loaded);
+        setName(loaded.name || "");
+        setSurname(loaded.surname || "");
+        setCity(loaded.city || "");
+        setCountry(loaded.country || "");
+        setViolationType((loaded.violationType as ViolationType) || "");
+        setDescription(loaded.description || "");
+        setDateOfBirth(loaded.dateOfBirth ? new Date(loaded.dateOfBirth) : null);
         setHasChanges(false);
         setShowSaveButton(false);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : t("editTenant.loadError")
-        );
+        setLoadError(getErrorMessage(err, t, "editTenant.loadError"));
       }
     };
     load();
@@ -124,9 +127,7 @@ export default function TenantEditForm({ tenantId }: Props) {
         router.push("/profile");
       }, 1500);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : t("editTenant.updateError")
-      );
+      setError(getErrorMessage(err, t, "editTenant.updateError"));
     }
   };
 
@@ -137,11 +138,41 @@ export default function TenantEditForm({ tenantId }: Props) {
       await deleteTenant(tenantId);
       router.push("/profile");
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : t("editTenant.deleteError")
-      );
+      setError(getErrorMessage(err, t, "editTenant.deleteError"));
     }
   };
+
+  // Only the reporter may edit or delete a tenant (the API answers 403 otherwise)
+  const notice = loadError
+    ? loadError
+    : tenant && user && tenant.createdById !== user.id
+      ? t("editTenant.notOwner")
+      : "";
+
+  if (notice) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 pt-32 pb-8">
+        <div className="w-full max-w-3xl mx-auto bg-white rounded-lg shadow-md">
+          <div className="bg-orange text-white rounded-t-lg">
+            <h1 className="text-xl text-center font-bold mb-6 py-2">
+              {t("editTenant.title")}
+            </h1>
+          </div>
+          <div className="p-6">
+            <div className="mb-4 p-2 bg-red-100 border border-red-300 text-red-800 rounded">
+              {notice}
+            </div>
+            <Link
+              href="/profile"
+              className="text-orange hover:text-orangeDark text-sm font-semibold"
+            >
+              {t("editTenant.backToProfile")}
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 pt-32 pb-8">
@@ -235,8 +266,8 @@ export default function TenantEditForm({ tenantId }: Props) {
                 <option value={ViolationType.RentNotPaid}>
                   {translateViolationType(ViolationType.RentNotPaid, t)}
                 </option>
-                <option value={ViolationType.PropetryWrecked}>
-                  {translateViolationType(ViolationType.PropetryWrecked, t)}
+                <option value={ViolationType.PropertyWrecked}>
+                  {translateViolationType(ViolationType.PropertyWrecked, t)}
                 </option>
               </select>
             </div>

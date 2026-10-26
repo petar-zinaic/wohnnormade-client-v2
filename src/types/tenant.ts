@@ -7,7 +7,7 @@ export interface TenantAuthor {
 
 export enum ViolationType {
   RentNotPaid = "Rent Not Paid",
-  PropetryWrecked = "Propetry Wrecked",
+  PropertyWrecked = "Property Wrecked",
 }
 
 export interface Tenant {
@@ -35,8 +35,15 @@ export interface CreateTenantData {
   country: string;
 }
 
+export interface ApiErrorBody {
+  status: number;
+  message: string;
+  internal_code: string;
+}
+
+// Envelope of every API response; `error` is `{}` on success
 export interface ApiResponse<T> {
   result: T;
   status: boolean;
-  error: any;
+  error: Partial<ApiErrorBody>;
 }

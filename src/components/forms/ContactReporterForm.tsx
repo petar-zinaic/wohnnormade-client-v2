@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import CommunicationService from "@/services/communication";
+import { getErrorMessage } from "@/utils/api";
 
 interface ContactReporterModalProps {
   tenant: any;
@@ -40,7 +41,7 @@ export default function ContactReporterModal({
     setError("");
 
     try {
-      const response = await CommunicationService.contactReporter({
+      const { threadId } = await CommunicationService.contactReporter({
         tenantId: tenant.id,
         recipientId: reporter.id,
         message: message.trim(),
@@ -50,10 +51,10 @@ export default function ContactReporterModal({
 
       // Redirect to conversation thread after 2 seconds
       setTimeout(() => {
-        window.location.href = `/communications/thread/${response.result.threadId}`;
+        window.location.href = `/communications/thread/${threadId}`;
       }, 2000);
-    } catch (err: any) {
-      setError(err.message || t("common.errorSendingMessage"));
+    } catch (err) {
+      setError(getErrorMessage(err, t, "common.errorSendingMessage"));
     } finally {
       setIsSubmitting(false);
     }

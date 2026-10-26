@@ -11,6 +11,7 @@ import type {
   ThreadResponse,
   CommunicationMessage,
 } from "@/services/communication";
+import { getErrorMessage } from "@/utils/api";
 
 export default function ThreadPage() {
   return (
@@ -49,10 +50,10 @@ function ThreadPageContent() {
     try {
       setIsLoadingThread(true);
       setError("");
-      const response = await CommunicationService.getThread(threadId);
+      const result = await CommunicationService.getThread(threadId);
 
       // Check if current user is a participant in this thread
-      const isParticipant = response.result.communications.some(
+      const isParticipant = result.communications.some(
         (comm: CommunicationMessage) =>
           comm.senderId === user?.id || comm.recipientId === user?.id
       );
@@ -63,9 +64,9 @@ function ThreadPageContent() {
         return;
       }
 
-      setThread(response.result);
-    } catch (err: any) {
-      setError(err.message || t("communications.failedToLoad"));
+      setThread(result);
+    } catch (err) {
+      setError(getErrorMessage(err, t, "communications.failedToLoad"));
     } finally {
       setIsLoadingThread(false);
     }
@@ -89,8 +90,8 @@ function ThreadPageContent() {
 
       setNewMessage("");
       await fetchThread(); // Refresh thread
-    } catch (err: any) {
-      setError(err.message || t("communications.failedToSend"));
+    } catch (err) {
+      setError(getErrorMessage(err, t, "communications.failedToSend"));
     } finally {
       setIsSubmitting(false);
     }

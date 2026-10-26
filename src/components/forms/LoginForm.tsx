@@ -7,12 +7,17 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { Button } from "@/components/common";
+import { getErrorMessage } from "@/utils/api";
 
 interface LoginFormProps {
   onSuccess?: () => void;
+  sessionExpired?: boolean;
 }
 
-export default function LoginForm({ onSuccess }: LoginFormProps) {
+export default function LoginForm({
+  onSuccess,
+  sessionExpired,
+}: LoginFormProps) {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,7 +40,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
         router.push("/");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("login.loginFailed"));
+      setError(getErrorMessage(err, t, "login.loginFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -50,6 +55,12 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
           </h1>
         </div>
         <form className="p-6" onSubmit={handleSubmit}>
+          {sessionExpired && !error && (
+            <div className="mb-4 p-3 bg-yellow-100 border border-yellow-400 text-yellow-800 rounded">
+              {t("auth.sessionExpired")}
+            </div>
+          )}
+
           {error && (
             <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
               {error}

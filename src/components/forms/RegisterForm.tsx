@@ -12,6 +12,7 @@ import {
   validateRegisterForm,
   hasValidationErrors,
 } from "@/utils/validation";
+import { getErrorMessage } from "@/utils/api";
 
 interface RegisterFormProps {
   onSuccess?: () => void;
@@ -83,7 +84,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       }
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : t("register.registrationFailed")
+        getErrorMessage(err, t, "register.registrationFailed")
       );
     } finally {
       setIsLoading(false);

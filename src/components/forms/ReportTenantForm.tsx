@@ -8,8 +8,9 @@ import DatePicker from "react-datepicker";
 import { useTenant } from "@/context/TenantContext";
 import type { CreateTenantData } from "@/types";
 import { ViolationType } from "@/types";
+import { getErrorMessage } from "@/utils/api";
 
-export default function ReportTennantForm() {
+export default function ReportTenantForm() {
   const { t } = useTranslation();
   const { createTenant, isLoading } = useTenant();
   const router = useRouter();
@@ -56,7 +57,7 @@ export default function ReportTennantForm() {
       setDescription("");
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : t("contribute.submitError")
+        getErrorMessage(err, t, "contribute.submitError")
       );
     }
   };
@@ -160,7 +161,7 @@ export default function ReportTennantForm() {
                 <option value={ViolationType.RentNotPaid}>
                   {t("contribute.rentNotPaid")}
                 </option>
-                <option value={ViolationType.PropetryWrecked}>
+                <option value={ViolationType.PropertyWrecked}>
                   {t("contribute.propertyWrecked")}
                 </option>
               </select>
