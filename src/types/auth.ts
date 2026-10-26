@@ -1,26 +1,22 @@
 export interface User {
   id: number;
   email: string;
-  name: string;
-  surname: string;
-  city: string;
-  country: string;
+  name: string | null;
+  surname: string | null;
+  city: string | null;
+  country: string | null;
   createdAt: string;
 }
 
+// `result` of POST auth/login and auth/register
 export interface AuthResponse {
-  user?: User;
-  token?: string;
-  result?: {
-    user: User;
-    token: string;
-  };
-  data?: {
-    user: User;
-    token: string;
-  };
-  status?: boolean;
-  error?: any;
+  user: User;
+  token: string;
+}
+
+// `result` of forgot-password, reset-password and change-password
+export interface AuthMessageResponse {
+  message: string;
 }
 
 export interface LoginData {

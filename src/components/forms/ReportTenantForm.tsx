@@ -8,6 +8,7 @@ import DatePicker from "react-datepicker";
 import { useTenant } from "@/context/TenantContext";
 import type { CreateTenantData } from "@/types";
 import { ViolationType } from "@/types";
+import { getErrorMessage } from "@/utils/api";
 
 export default function ReportTenantForm() {
   const { t } = useTranslation();
@@ -56,7 +57,7 @@ export default function ReportTenantForm() {
       setDescription("");
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : t("contribute.submitError")
+        getErrorMessage(err, t, "contribute.submitError")
       );
     }
   };

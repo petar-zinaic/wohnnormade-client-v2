@@ -9,6 +9,7 @@ import { Tenant } from "@/types/tenant";
 import Button from "@/components/common/Button";
 import UserAvatarIcon from "@/components/icons/UserAvatarIcon";
 import { translateViolationType } from "@/utils/violationTypeTranslation";
+import { getErrorMessage } from "@/utils/api";
 
 export default function LandlordDetailsPage() {
   return (
@@ -44,8 +45,8 @@ function LandlordDetailsContent() {
       setError("");
       const data = await UserService.getUserProfile(landlordId);
       setLandlord(data);
-    } catch (err: any) {
-      setError(err.message || t("landlordDetails.loadError"));
+    } catch (err) {
+      setError(getErrorMessage(err, t, "landlordDetails.loadError"));
     } finally {
       setIsLoading(false);
     }

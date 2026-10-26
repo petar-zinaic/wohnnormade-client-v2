@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import CommunicationService from "@/services/communication";
 import type { ThreadResponse } from "@/services/communication";
+import { getErrorMessage } from "@/utils/api";
 
 export default function ConversationsPage() {
   return (
@@ -33,10 +34,9 @@ function ConversationsPageContent() {
     try {
       setIsLoadingConversations(true);
       setError("");
-      const response = await CommunicationService.getMyConversations();
-      setConversations(response.result);
-    } catch (err: any) {
-      setError(err.message || t("communications.failedToLoad"));
+      setConversations(await CommunicationService.getMyConversations());
+    } catch (err) {
+      setError(getErrorMessage(err, t, "communications.failedToLoad"));
     } finally {
       setIsLoadingConversations(false);
     }

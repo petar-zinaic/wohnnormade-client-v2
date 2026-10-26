@@ -35,11 +35,15 @@ export interface CreateTenantData {
   country: string;
 }
 
+export interface ApiErrorBody {
+  status: number;
+  message: string;
+  internal_code: string;
+}
+
+// Envelope of every API response; `error` is `{}` on success
 export interface ApiResponse<T> {
-  success?: boolean;
   result: T;
-  error?: { message: string; code?: string } | any;
-  status?: boolean;
-  message?: string;
-  data?: T;
+  status: boolean;
+  error: Partial<ApiErrorBody>;
 }

@@ -32,19 +32,14 @@ export function TenantProvider({ children }: TenantProviderProps) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await TenantService.createTenant(data);
-      const tenant: Tenant =
-        (response as any).result ||
-        (response as any).tenant ||
-        (response as any).data ||
-        response;
+      const tenant = await TenantService.createTenant(data);
       setCurrentTenant(tenant);
       return tenant;
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to create tenant";
       setError(message);
-      throw new Error(message);
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -54,19 +49,14 @@ export function TenantProvider({ children }: TenantProviderProps) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await TenantService.getTenantById(id);
-      const tenant: Tenant =
-        (response as any).result ||
-        (response as any).tenant ||
-        (response as any).data ||
-        response;
+      const tenant = await TenantService.getTenantById(id);
       setCurrentTenant(tenant);
       return tenant;
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to fetch tenant";
       setError(message);
-      throw new Error(message);
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -79,19 +69,14 @@ export function TenantProvider({ children }: TenantProviderProps) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await TenantService.updateTenant(id, data);
-      const tenant: Tenant =
-        (response as any).result ||
-        (response as any).tenant ||
-        (response as any).data ||
-        response;
+      const tenant = await TenantService.updateTenant(id, data);
       setCurrentTenant(tenant);
       return tenant;
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to update tenant";
       setError(message);
-      throw new Error(message);
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -109,7 +94,7 @@ export function TenantProvider({ children }: TenantProviderProps) {
       const message =
         err instanceof Error ? err.message : "Failed to delete tenant";
       setError(message);
-      throw new Error(message);
+      throw err;
     } finally {
       setIsLoading(false);
     }

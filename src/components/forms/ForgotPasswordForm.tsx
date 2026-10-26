@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import { getApiUrl } from "@/utils/api";
+import { getErrorMessage } from "@/utils/api";
+import { AuthService } from "@/services/auth";
 import { Button } from "@/components/common";
 
 export default function ForgotPasswordForm() {
@@ -20,25 +21,11 @@ export default function ForgotPasswordForm() {
     setMessage("");
 
     try {
-      const response = await fetch(getApiUrl("auth/forgot-password"), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || t("forgotPassword.sendFailed"));
-      }
-
-      const result = await response.json();
-      setMessage(result.message);
+      await AuthService.forgotPassword(email);
+      // The API answers the same whether or not the email exists
+      setMessage(t("forgotPassword.sent"));
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : t("forgotPassword.sendFailed")
-      );
+      setError(getErrorMessage(err, t, "forgotPassword.sendFailed"));
     } finally {
       setIsLoading(false);
     }

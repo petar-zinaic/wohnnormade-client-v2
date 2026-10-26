@@ -1,6 +1,5 @@
-import { getApiUrl } from "@/utils/api";
+import { apiFetch } from "@/utils/api";
 import { AuthService } from "./auth";
-import type { ApiResponse } from "@/types/tenant";
 
 export interface CommunicationMessage {
   id: number;
@@ -52,92 +51,44 @@ export interface ReplyData {
   message: string;
 }
 
+const jsonHeaders = (): Record<string, string> => ({
+  "Content-Type": "application/json",
+  ...AuthService.getAuthHeaders(),
+});
+
 class CommunicationService {
+  // recipientId must be the tenant's reporter (tenant.createdBy.id)
   static async contactReporter(
     data: ContactReporterData
-  ): Promise<ApiResponse<{ threadId: string; message: CommunicationMessage }>> {
-    const response = await fetch(
-      getApiUrl("/communications/contact-reporter"),
+  ): Promise<{ threadId: string; message: CommunicationMessage }> {
+    return apiFetch<{ threadId: string; message: CommunicationMessage }>(
+      "/communications/contact-reporter",
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...AuthService.getAuthHeaders(),
-        },
+        headers: jsonHeaders(),
         body: JSON.stringify(data),
       }
     );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData?.error?.message || "Failed to send message");
-    }
-
-    return response.json();
   }
 
-  static async reply(
-    data: ReplyData
-  ): Promise<ApiResponse<CommunicationMessage>> {
-    const response = await fetch(getApiUrl("/communications/reply"), {
+  static async reply(data: ReplyData): Promise<CommunicationMessage> {
+    return apiFetch<CommunicationMessage>("/communications/reply", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...AuthService.getAuthHeaders(),
-      },
+      headers: jsonHeaders(),
       body: JSON.stringify(data),
     });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData?.error?.message || "Failed to send reply");
-    }
-
-    return response.json();
   }
 
-  static async getThread(
-    threadId: string
-  ): Promise<ApiResponse<ThreadResponse>> {
-    const response = await fetch(
-      getApiUrl(`/communications/thread/${threadId}`),
-      {
-        headers: {
-          "Content-Type": "application/json",
-          ...AuthService.getAuthHeaders(),
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData?.error?.message || "Failed to load conversation"
-      );
-    }
-
-    return response.json();
+  static async getThread(threadId: string): Promise<ThreadResponse> {
+    return apiFetch<ThreadResponse>(`/communications/thread/${threadId}`, {
+      headers: jsonHeaders(),
+    });
   }
 
-  static async getMyConversations(): Promise<ApiResponse<ThreadResponse[]>> {
-    const response = await fetch(
-      getApiUrl("/communications/my-conversations"),
-      {
-        headers: {
-          "Content-Type": "application/json",
-          ...AuthService.getAuthHeaders(),
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData?.error?.message || "Failed to load conversations"
-      );
-    }
-
-    return response.json();
+  static async getMyConversations(): Promise<ThreadResponse[]> {
+    return apiFetch<ThreadResponse[]>("/communications/my-conversations", {
+      headers: jsonHeaders(),
+    });
   }
 }
 

@@ -1,117 +1,57 @@
-import { getApiUrl } from "@/utils/api";
-import type { ApiResponse, CreateTenantData, Tenant } from "@/types/tenant";
+import { apiFetch } from "@/utils/api";
+import type { CreateTenantData, Tenant } from "@/types/tenant";
 import { AuthService } from "./auth";
 
+const jsonHeaders = (): Record<string, string> => ({
+  "Content-Type": "application/json",
+  ...AuthService.getAuthHeaders(),
+});
+
 class TenantService {
-  static async getTenants(): Promise<ApiResponse<Tenant[]>> {
-    const response = await fetch(getApiUrl("/tenant"), {
-      headers: {
-        "Content-Type": "application/json",
-        ...AuthService.getAuthHeaders(),
-      },
+  static async getTenants(): Promise<Tenant[]> {
+    return apiFetch<Tenant[]>("/tenant", {
+      headers: jsonHeaders(),
     });
-    return response.json();
   }
 
-  static async getTenantById(id: number): Promise<ApiResponse<Tenant>> {
-    const response = await fetch(getApiUrl(`/tenant/${id}`), {
-      headers: {
-        "Content-Type": "application/json",
-        ...AuthService.getAuthHeaders(),
-      },
+  static async getTenantById(id: number): Promise<Tenant> {
+    return apiFetch<Tenant>(`/tenant/${id}`, {
+      headers: jsonHeaders(),
     });
-    return response.json();
   }
 
-  static async searchTenants(query: string, dateOfBirth: string): Promise<ApiResponse<Tenant[]>> {
+  static async searchTenants(query: string, dateOfBirth: string): Promise<Tenant[]> {
     const normalized = query.replace(/\s+/g, " ").trim();
     const url = `/tenant/search?q=${encodeURIComponent(normalized)}&dateOfBirth=${encodeURIComponent(dateOfBirth)}`;
-    const response = await fetch(getApiUrl(url), {
-      headers: {
-        "Content-Type": "application/json",
-        ...AuthService.getAuthHeaders(),
-      },
+    return apiFetch<Tenant[]>(url, {
+      headers: jsonHeaders(),
     });
-    return response.json();
   }
 
-  static async createTenant(
-    data: CreateTenantData
-  ): Promise<ApiResponse<Tenant>> {
-    const response = await fetch(getApiUrl("/tenant/create"), {
+  static async createTenant(data: CreateTenantData): Promise<Tenant> {
+    return apiFetch<Tenant>("/tenant/create", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...AuthService.getAuthHeaders(),
-      },
+      headers: jsonHeaders(),
       body: JSON.stringify(data),
     });
-    if (!response.ok) {
-      let errorBody: any = {};
-      try {
-        errorBody = await response.json();
-      } catch {}
-      const message =
-        errorBody?.error?.message ||
-        errorBody?.message ||
-        "Failed to create tenant";
-      throw new Error(message);
-    }
-    return response.json();
   }
 
   static async updateTenant(
     id: number,
     data: Partial<CreateTenantData>
-  ): Promise<ApiResponse<Tenant>> {
-    const response = await fetch(getApiUrl(`/tenant/${id}`), {
+  ): Promise<Tenant> {
+    return apiFetch<Tenant>(`/tenant/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        ...AuthService.getAuthHeaders(),
-      },
+      headers: jsonHeaders(),
       body: JSON.stringify(data),
     });
-    if (!response.ok) {
-      let errorBody: any = {};
-      try {
-        errorBody = await response.json();
-      } catch {}
-      const message =
-        errorBody?.error?.message ||
-        errorBody?.message ||
-        "Failed to update tenant";
-      throw new Error(message);
-    }
-    return response.json();
   }
 
-  static async deleteTenant(
-    id: number
-  ): Promise<{ status: boolean } | ApiResponse<{}>> {
-    const response = await fetch(getApiUrl(`/tenant/${id}`), {
+  static async deleteTenant(id: number): Promise<void> {
+    await apiFetch<unknown>(`/tenant/${id}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        ...AuthService.getAuthHeaders(),
-      },
+      headers: jsonHeaders(),
     });
-    if (!response.ok) {
-      let errorBody: any = {};
-      try {
-        errorBody = await response.json();
-      } catch {}
-      const message =
-        errorBody?.error?.message ||
-        errorBody?.message ||
-        "Failed to delete tenant";
-      throw new Error(message);
-    }
-    try {
-      return await response.json();
-    } catch {
-      return { status: true } as any;
-    }
   }
 }
 

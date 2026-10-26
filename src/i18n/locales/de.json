@@ -31,7 +31,21 @@
     "copyright": "Copyright © Alle Rechte vorbehalten."
   },
   "auth": {
-    "loginRequired": "Sie müssen angemeldet sein, um auf diese Seite zuzugreifen. Weiterleitung zur Anmeldung..."
+    "loginRequired": "Sie müssen angemeldet sein, um auf diese Seite zuzugreifen. Weiterleitung zur Anmeldung...",
+    "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an."
+  },
+  "apiErrors": {
+    "request_body_validation": "Einige der eingegebenen Daten sind ungültig. Bitte überprüfen Sie Ihre Eingaben.",
+    "id_validation": "Ungültige ID.",
+    "invalid_query": "Ungültige Suchparameter. Bitte überprüfen Sie Ihre Eingaben.",
+    "invalid_reset_token": "Dieser Link zum Zurücksetzen ist ungültig, abgelaufen oder wurde bereits verwendet.",
+    "missing_token": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
+    "invalid_credentials": "Ungültige E-Mail-Adresse oder ungültiges Passwort.",
+    "forbidden": "Sie sind nicht berechtigt, diese Aktion auszuführen.",
+    "not_found": "Der angeforderte Eintrag wurde nicht gefunden.",
+    "tenant_already_exists": "Dieser Mieter wurde bereits gemeldet.",
+    "email_already_exists": "Ein Konto mit dieser E-Mail-Adresse existiert bereits.",
+    "internal_error": "Auf unserer Seite ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."
   },
   "login": {
     "title": "Bei Wohnnomade anmelden",
@@ -54,7 +68,21 @@
     "sending": "Wird gesendet...",
     "sendResetLink": "Link zum Zurücksetzen senden",
     "backToLogin": "Zurück zur Anmeldung",
-    "sendFailed": "Fehler beim Senden der Zurücksetzungs-E-Mail"
+    "sendFailed": "Fehler beim Senden der Zurücksetzungs-E-Mail",
+    "sent": "Falls ein Konto mit dieser E-Mail-Adresse existiert, haben wir Ihnen einen Link zum Zurücksetzen gesendet. Er ist 60 Minuten gültig."
+  },
+  "resetPassword": {
+    "title": "Neues Passwort festlegen",
+    "newPasswordLabel": "Neues Passwort",
+    "confirmPasswordLabel": "Neues Passwort bestätigen",
+    "submit": "Neues Passwort speichern",
+    "submitting": "Wird gespeichert...",
+    "success": "Ihr Passwort wurde geändert. Weiterleitung zur Anmeldung...",
+    "invalidLink": "Dieser Link zum Zurücksetzen ist ungültig. Bitte fordern Sie einen neuen an.",
+    "expiredLink": "Dieser Link zum Zurücksetzen ist abgelaufen oder wurde bereits verwendet.",
+    "requestNewLink": "Neuen Link anfordern",
+    "backToLogin": "Zurück zur Anmeldung",
+    "failed": "Fehler beim Zurücksetzen des Passworts"
   },
   "register": {
     "title": "Registrieren",
@@ -173,7 +201,8 @@
     "updateError": "Fehler beim Aktualisieren des Mieters",
     "deleteError": "Fehler beim Löschen des Mieters",
     "deleteConfirm": "Sind Sie sicher, dass Sie diesen Mieter löschen möchten?",
-    "loadError": "Fehler beim Laden des Mieters"
+    "loadError": "Fehler beim Laden des Mieters",
+    "notOwner": "Nur die Person, die diesen Mieter gemeldet hat, kann den Eintrag bearbeiten oder löschen."
   },
   "profile": {
     "title": "Vermieter Profil",
@@ -216,8 +245,10 @@
     "accountActions": "Kontoaktionen",
     "logout": "Abmelden",
     "deleteAccount": "Konto löschen",
-    "deleteAccountConfirm": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
-    "deleteAccountFailed": "Fehler beim Löschen des Kontos"
+    "deleteAccountConfirm": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Alle Ihre Mieterberichte und Konversationen werden ebenfalls dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "deleteAccountFailed": "Fehler beim Löschen des Kontos",
+    "passwordChanged": "Passwort erfolgreich geändert!",
+    "currentPasswordIncorrect": "Das aktuelle Passwort ist falsch."
   },
   "contactReporter": {
     "title": "Vermieter kontaktieren",

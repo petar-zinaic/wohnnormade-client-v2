@@ -5,9 +5,12 @@ import React, {
   useContext,
   useState,
   useEffect,
+  useRef,
   ReactNode,
 } from "react";
+import { useRouter } from "next/navigation";
 import { AuthService } from "@/services/auth";
+import { SESSION_EXPIRED_EVENT } from "@/utils/api";
 import type { User, AuthContextType } from "@/types";
 
 interface AuthProviderProps {
@@ -19,31 +22,48 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+  // Mirrors `user` so the session-expired listener sees the current value
+  const userRef = useRef<User | null>(null);
+  userRef.current = user;
 
   useEffect(() => {
     const token = AuthService.getToken();
     if (token) {
-      const cached = AuthService.getUser();
-      if (cached) {
-        setUser(cached);
+      const expiry = AuthService.getTokenExpiry(token);
+      if (expiry && expiry.getTime() <= Date.now()) {
+        AuthService.logout();
+      } else {
+        const cached = AuthService.getUser();
+        if (cached) {
+          setUser(cached);
+        }
       }
     }
     setIsLoading(false);
   }, []);
 
+  // apiFetch fires this on 401 missing_token (token missing, invalid or expired)
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      const hadSession = !!userRef.current || AuthService.isAuthenticated();
+      AuthService.logout();
+      userRef.current = null;
+      setUser(null);
+      if (hadSession) {
+        router.push("/login?sessionExpired=1");
+      }
+    };
+
+    window.addEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+    return () => {
+      window.removeEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+    };
+  }, [router]);
+
   const login = async (email: string, password: string) => {
     const response = await AuthService.login({ email, password });
-    console.log("AuthContext login response:", response);
-
-    // Extract user from the response structure
-    const user = response.user || response.result?.user || response.data?.user;
-    console.log("AuthContext extracted user:", user);
-
-    if (user?.id) {
-      setUser(user);
-    } else {
-      console.error("No user found in login response");
-    }
+    setUser(response.user);
   };
 
   const register = async (
@@ -65,17 +85,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     };
 
     const response = await AuthService.register(registerData);
-    console.log("AuthContext register response:", response);
-
-    // Extract user from the response structure
-    const user = response.user || response.result?.user || response.data?.user;
-    console.log("AuthContext extracted user:", user);
-
-    if (user) {
-      setUser(user);
-    } else {
-      console.error("No user found in register response");
-    }
+    setUser(response.user);
   };
 
   const logout = () => {

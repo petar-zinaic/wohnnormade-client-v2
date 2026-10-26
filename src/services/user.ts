@@ -1,7 +1,8 @@
-import { getApiUrl } from "@/utils/api";
+import { apiFetch } from "@/utils/api";
 import { AuthService } from "./auth";
 import type { Tenant } from "@/types/tenant";
 
+// The API rejects any other field with 400
 export interface UpdateUserData {
   name?: string;
   surname?: string;
@@ -12,13 +13,18 @@ export interface UpdateUserData {
 export interface UserProfile {
   id: number;
   email: string;
-  name: string;
-  surname: string;
-  city: string;
-  country: string;
+  name: string | null;
+  surname: string | null;
+  city: string | null;
+  country: string | null;
   createdAt: string;
   tenants?: Tenant[];
 }
+
+const jsonHeaders = (): Record<string, string> => ({
+  "Content-Type": "application/json",
+  ...AuthService.getAuthHeaders(),
+});
 
 class UserService {
   /**
@@ -31,29 +37,11 @@ class UserService {
     userId: number,
     userData: UpdateUserData
   ): Promise<UserProfile> {
-    try {
-      const response = await fetch(getApiUrl(`users/${userId}`), {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          ...AuthService.getAuthHeaders(),
-        },
-        body: JSON.stringify(userData),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || "Failed to update profile");
-      }
-
-      const result = await response.json();
-      return result.result || result.user || result;
-    } catch (error) {
-      console.error("Error updating user profile:", error);
-      throw new Error(
-        error instanceof Error ? error.message : "Failed to update profile"
-      );
-    }
+    return apiFetch<UserProfile>(`users/${userId}`, {
+      method: "PUT",
+      headers: jsonHeaders(),
+      body: JSON.stringify(userData),
+    });
   }
 
   /**
@@ -62,83 +50,32 @@ class UserService {
    * @returns Promise<UserProfile> - User profile data
    */
   static async getUserProfile(userId: number): Promise<UserProfile> {
-    try {
-      const response = await fetch(getApiUrl(`users/${userId}`), {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          ...AuthService.getAuthHeaders(),
-        },
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || "Failed to fetch user profile");
-      }
-
-      const result = await response.json();
-      return result.result || result.user || result;
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
-      throw new Error(
-        error instanceof Error ? error.message : "Failed to fetch user profile"
-      );
-    }
+    return apiFetch<UserProfile>(`users/${userId}`, {
+      method: "GET",
+      headers: jsonHeaders(),
+    });
   }
 
   /**
    * Get all users
    */
   static async getAllUsers(): Promise<UserProfile[]> {
-    try {
-      const response = await fetch(getApiUrl("users"), {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          ...AuthService.getAuthHeaders(),
-        },
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || "Failed to fetch users");
-      }
-
-      const result = await response.json();
-      return result.result || result.users || result;
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      throw new Error(
-        error instanceof Error ? error.message : "Failed to fetch users"
-      );
-    }
+    return apiFetch<UserProfile[]>("users", {
+      method: "GET",
+      headers: jsonHeaders(),
+    });
   }
 
   /**
-   * Delete user account
+   * Delete user account, including the user's tenant reports and conversations
    * @param userId - User ID
    * @returns Promise<void>
    */
   static async deleteAccount(userId: number): Promise<void> {
-    try {
-      const response = await fetch(getApiUrl(`users/${userId}`), {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          ...AuthService.getAuthHeaders(),
-        },
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || "Failed to delete account");
-      }
-    } catch (error) {
-      console.error("Error deleting user account:", error);
-      throw new Error(
-        error instanceof Error ? error.message : "Failed to delete account"
-      );
-    }
+    await apiFetch<unknown>(`users/${userId}`, {
+      method: "DELETE",
+      headers: jsonHeaders(),
+    });
   }
 }
 

@@ -14,6 +14,7 @@ export default function robots(): MetadataRoute.Robots {
           "/tenant/",
           "/tenant-preview",
           "/forgot-password",
+          "/reset-password",
           "/login",
           "/register",
         ],
