@@ -34,6 +34,14 @@
     "loginRequired": "Sie müssen angemeldet sein, um auf diese Seite zuzugreifen. Weiterleitung zur Anmeldung...",
     "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an."
   },
+  "captcha": {
+    "notRobot": "Ich bin kein Roboter",
+    "clickToVerify": "Zum Bestätigen klicken",
+    "verifying": "Wird überprüft...",
+    "success": "Erfolgreich!",
+    "retry": "Überprüfung fehlgeschlagen. Zum Wiederholen klicken",
+    "protectedBy": "Geschützt durch"
+  },
   "apiErrors": {
     "request_body_validation": "Einige der eingegebenen Daten sind ungültig. Bitte überprüfen Sie Ihre Eingaben.",
     "id_validation": "Ungültige ID.",
