@@ -69,7 +69,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const register = async (
     email: string,
     password: string,
-    userData?: { name: string; surname: string; city: string; country: string }
+    userData?: {
+      name: string;
+      surname: string;
+      city: string;
+      country: string;
+      captchaToken: string;
+    }
   ) => {
     if (!userData) {
       throw new Error("User data is required for registration");
@@ -82,6 +88,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       surname: userData.surname,
       city: userData.city,
       country: userData.country,
+      captchaToken: userData.captchaToken,
     };
 
     const response = await AuthService.register(registerData);

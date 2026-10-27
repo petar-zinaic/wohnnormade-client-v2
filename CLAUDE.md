@@ -71,7 +71,10 @@ src/
 
 ```
 NEXT_PUBLIC_API_URL=http://localhost:3001/api   # Backend API endpoint
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=...              # Cloudflare Turnstile site key (sign-up captcha); test key 1x00000000000000000000AA always passes
 ```
+
+The register request sends `captchaToken`; the backend must verify it against Cloudflare with `TURNSTILE_SECRET_KEY`.
 
 ## Key Patterns
 

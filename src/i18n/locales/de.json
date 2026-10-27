@@ -39,6 +39,7 @@
     "id_validation": "Ungültige ID.",
     "invalid_query": "Ungültige Suchparameter. Bitte überprüfen Sie Ihre Eingaben.",
     "invalid_reset_token": "Dieser Link zum Zurücksetzen ist ungültig, abgelaufen oder wurde bereits verwendet.",
+    "invalid_captcha": "Captcha-Überprüfung fehlgeschlagen. Bitte versuchen Sie es erneut.",
     "missing_token": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
     "invalid_credentials": "Ungültige E-Mail-Adresse oder ungültiges Passwort.",
     "forbidden": "Sie sind nicht berechtigt, diese Aktion auszuführen.",
@@ -109,7 +110,9 @@
     "createAccount": "Konto erstellen",
     "haveAccount": "Haben Sie bereits ein Konto?",
     "signInHere": "Hier anmelden",
-    "registrationFailed": "Registrierung fehlgeschlagen"
+    "registrationFailed": "Registrierung fehlgeschlagen",
+    "captchaRequired": "Bitte bestätigen Sie, dass Sie kein Roboter sind.",
+    "captchaError": "Verifizierung fehlgeschlagen. Bitte versuchen Sie es erneut."
   },
   "home": {
     "title": "An wen Sie Ihre Wohnung",

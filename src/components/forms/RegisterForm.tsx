@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { Button, LocationAutocomplete } from "@/components/common";
+import {
+  Button,
+  LocationAutocomplete,
+  TurnstileWidget,
+} from "@/components/common";
+import type { TurnstileWidgetHandle } from "@/components/common/TurnstileWidget";
 import {
   ValidationErrors,
   validateRegisterForm,
@@ -33,6 +38,8 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
   );
@@ -51,6 +58,11 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
 
     if (!acceptedPrivacy) {
       setError(t("register.acceptPrivacy") + " " + t("register.privacyPolicy"));
+      return;
+    }
+
+    if (!captchaToken) {
+      setError(t("register.captchaRequired"));
       return;
     }
 
@@ -76,7 +88,13 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
     setIsLoading(true);
 
     try {
-      await register(email, password, { name, surname, city, country });
+      await register(email, password, {
+        name,
+        surname,
+        city,
+        country,
+        captchaToken,
+      });
       if (onSuccess) {
         onSuccess();
       } else {
@@ -86,6 +104,9 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
       setError(
         getErrorMessage(err, t, "register.registrationFailed")
       );
+      // Turnstile tokens are single-use, so get a fresh one for the next try
+      setCaptchaToken("");
+      turnstileRef.current?.reset();
     } finally {
       setIsLoading(false);
     }
@@ -108,7 +129,8 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
     confirmPassword &&
     password === confirmPassword &&
     acceptedTerms &&
-    acceptedPrivacy;
+    acceptedPrivacy &&
+    captchaToken;
 
   const isSubmitDisabled = isLoading || !isFormValid;
 
@@ -362,6 +384,18 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
                 </Link>
               </span>
             </label>
+          </div>
+
+          <div className="mb-6">
+            <TurnstileWidget
+              ref={turnstileRef}
+              onVerify={setCaptchaToken}
+              onExpire={() => setCaptchaToken("")}
+              onError={() => {
+                setCaptchaToken("");
+                setError(t("register.captchaError"));
+              }}
+            />
           </div>
 
           <div className="flex items-center justify-between">
