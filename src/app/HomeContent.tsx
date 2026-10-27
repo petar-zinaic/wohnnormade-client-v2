@@ -60,6 +60,33 @@ export default function Home() {
             </Link>
           </div>
         </div>
+        <div className="flex flex-col lg:flex-row justify-between items-center my-20">
+          <div className="lg:w-1/2 text-center lg:text-left p-4">
+            <h2 className="text-xl font-bold mb-4 text-orange">
+              {t("home.freeTitle")}
+            </h2>
+            <h3 className="text-4xl font-bold mb-4">
+              {t("home.freeHeading")}{" "}
+              <span className="text-orange">{t("home.freeHeadingSpan")}</span>{" "}
+              {t("home.freeHeading2")}
+            </h3>
+            <p className="mb-6 text-xl text-gray">{t("home.freeSubtitle")}</p>
+            <Link href={isAuthenticated ? "/search" : "/register"}>
+              <Button
+                size="lg"
+                text={isAuthenticated ? t("home.searchTenant") : t("home.freeCta")}
+              />
+            </Link>
+          </div>
+          <div className="lg:w-1/2 flex justify-center p-4">
+            <Image
+              src="/assets/images/registration.svg"
+              alt="Free registration"
+              width={700}
+              height={400}
+            />
+          </div>
+        </div>
       </div>
     </main>
   );

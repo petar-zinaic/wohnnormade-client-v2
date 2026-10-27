@@ -120,7 +120,14 @@
     "helpTitle": "HELP FELLOW LANDLORDS",
     "communityTitle": "Become part of a community",
     "communitySubtitle": "that alerts other landlords of tenants that damaged their property or didn't pay for rent. Register and leave information about your bad experience to prevent others from having it.",
-    "reportTenant": "Report tenant"
+    "reportTenant": "Report tenant",
+    "freeTitle": "NO COSTS, NO SUBSCRIPTIONS",
+    "freeHeading": "Wohnnomade is",
+    "freeHeadingSpan": "completely free",
+    "freeHeading2": "for landlords",
+    "freeSubtitle": "Search tenant records, read reports from other landlords and share your own experiences without paying anything. No hidden fees, no premium plans, just a community of landlords protecting each other.",
+    "freeCta": "Register for free",
+    "searchTenant": "Search tenants"
   },
   "contribute": {
     "title": "Report Tenant",
