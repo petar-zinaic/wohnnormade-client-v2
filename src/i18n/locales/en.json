@@ -34,6 +34,14 @@
     "loginRequired": "You need to be logged in to access this page. Redirecting to login...",
     "sessionExpired": "Your session has expired. Please log in again."
   },
+  "captcha": {
+    "notRobot": "I'm not a robot",
+    "clickToVerify": "Click to verify",
+    "verifying": "Verifying...",
+    "success": "Success!",
+    "retry": "Verification failed. Click to try again",
+    "protectedBy": "Protected by"
+  },
   "apiErrors": {
     "request_body_validation": "Some of the entered data is invalid. Please check your input.",
     "id_validation": "Invalid ID.",
