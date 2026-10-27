@@ -4,7 +4,7 @@
 
 Wohnnormade is a tenant reporting and review platform (German market focus). Users can report tenant violations, search tenant records, communicate with reporters, and manage their profiles. The app supports English and German.
 
-**Production URL:** https://wohnnormade.com
+**Production URL:** https://www.wohnnomade.com
 
 ## Tech Stack
 
@@ -71,7 +71,10 @@ src/
 
 ```
 NEXT_PUBLIC_API_URL=http://localhost:3001/api   # Backend API endpoint
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=...              # Cloudflare Turnstile site key (sign-up captcha); test key 1x00000000000000000000AA always passes
 ```
+
+The register request sends `captchaToken`; the backend must verify it against Cloudflare with `TURNSTILE_SECRET_KEY`.
 
 ## Key Patterns
 

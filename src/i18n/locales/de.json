@@ -39,6 +39,7 @@
     "id_validation": "Ungültige ID.",
     "invalid_query": "Ungültige Suchparameter. Bitte überprüfen Sie Ihre Eingaben.",
     "invalid_reset_token": "Dieser Link zum Zurücksetzen ist ungültig, abgelaufen oder wurde bereits verwendet.",
+    "invalid_captcha": "Captcha-Überprüfung fehlgeschlagen. Bitte versuchen Sie es erneut.",
     "missing_token": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
     "invalid_credentials": "Ungültige E-Mail-Adresse oder ungültiges Passwort.",
     "forbidden": "Sie sind nicht berechtigt, diese Aktion auszuführen.",
@@ -109,7 +110,9 @@
     "createAccount": "Konto erstellen",
     "haveAccount": "Haben Sie bereits ein Konto?",
     "signInHere": "Hier anmelden",
-    "registrationFailed": "Registrierung fehlgeschlagen"
+    "registrationFailed": "Registrierung fehlgeschlagen",
+    "captchaRequired": "Bitte bestätigen Sie, dass Sie kein Roboter sind.",
+    "captchaError": "Verifizierung fehlgeschlagen. Bitte versuchen Sie es erneut."
   },
   "home": {
     "title": "An wen Sie Ihre Wohnung",
@@ -120,7 +123,14 @@
     "helpTitle": "HELFEN SIE ANDEREN VERMIETERN",
     "communityTitle": "Werden Sie Teil einer Gemeinschaft",
     "communitySubtitle": "die andere Vermieter vor Mietern warnt, die ihr Eigentum beschädigt oder die Miete nicht bezahlt haben. Registrieren Sie sich und hinterlassen Sie Informationen über Ihre schlechte Erfahrung, um andere davor zu bewahren.",
-    "reportTenant": "Mieter melden"
+    "reportTenant": "Mieter melden",
+    "freeTitle": "KEINE KOSTEN, KEIN ABO",
+    "freeHeading": "Wohnnomade ist",
+    "freeHeadingSpan": "komplett kostenlos",
+    "freeHeading2": "für Vermieter",
+    "freeSubtitle": "Durchsuchen Sie Mietereinträge, lesen Sie Berichte anderer Vermieter und teilen Sie Ihre eigenen Erfahrungen, ohne etwas zu bezahlen. Keine versteckten Gebühren, keine Premium-Tarife, nur eine Gemeinschaft von Vermietern, die sich gegenseitig schützt.",
+    "freeCta": "Kostenlos registrieren",
+    "searchTenant": "Mieter suchen"
   },
   "contribute": {
     "title": "Mieter melden",

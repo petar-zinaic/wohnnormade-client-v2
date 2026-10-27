@@ -31,6 +31,7 @@ export interface RegisterData {
   surname: string;
   city: string;
   country: string;
+  captchaToken: string;
 }
 
 export interface AuthContextType {
@@ -41,7 +42,13 @@ export interface AuthContextType {
   register: (
     email: string,
     password: string,
-    userData?: { name: string; surname: string; city: string; country: string }
+    userData?: {
+      name: string;
+      surname: string;
+      city: string;
+      country: string;
+      captchaToken: string;
+    }
   ) => Promise<void>;
   logout: () => void;
 }

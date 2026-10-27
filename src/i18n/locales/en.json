@@ -39,6 +39,7 @@
     "id_validation": "Invalid ID.",
     "invalid_query": "Invalid search parameters. Please check your input.",
     "invalid_reset_token": "This reset link is invalid, has expired or has already been used.",
+    "invalid_captcha": "Captcha verification failed. Please try again.",
     "missing_token": "Your session has expired. Please log in again.",
     "invalid_credentials": "Invalid email or password.",
     "forbidden": "You are not allowed to perform this action.",
@@ -109,7 +110,9 @@
     "createAccount": "Create Account",
     "haveAccount": "Already have an account?",
     "signInHere": "Sign in here",
-    "registrationFailed": "Registration failed"
+    "registrationFailed": "Registration failed",
+    "captchaRequired": "Please confirm you are not a robot.",
+    "captchaError": "Verification failed. Please try again."
   },
   "home": {
     "title": "Who",
@@ -120,7 +123,14 @@
     "helpTitle": "HELP FELLOW LANDLORDS",
     "communityTitle": "Become part of a community",
     "communitySubtitle": "that alerts other landlords of tenants that damaged their property or didn't pay for rent. Register and leave information about your bad experience to prevent others from having it.",
-    "reportTenant": "Report tenant"
+    "reportTenant": "Report tenant",
+    "freeTitle": "NO COSTS, NO SUBSCRIPTIONS",
+    "freeHeading": "Wohnnomade is",
+    "freeHeadingSpan": "completely free",
+    "freeHeading2": "for landlords",
+    "freeSubtitle": "Search tenant records, read reports from other landlords and share your own experiences without paying anything. No hidden fees, no premium plans, just a community of landlords protecting each other.",
+    "freeCta": "Register for free",
+    "searchTenant": "Search tenants"
   },
   "contribute": {
     "title": "Report Tenant",
